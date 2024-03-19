@@ -1,6 +1,9 @@
 const tasksList = document.querySelector('#tasks-list')
 const newTaskInput = document.querySelector('#new-task-input')
 const addTaskButton = document.querySelector('#add-task-button')
+const allTask = document.querySelector('#all-task-span')
+const pendingTask = document.querySelector('#pending-task-span')
+const completedTask = document.querySelector('#completed-task-span')
 
 const tasks = []
 
@@ -11,17 +14,17 @@ const app = {
 }
 
 window.onload = function () {
-  const savedTasks = JSON.parse(localStorage.getItem('tasks')) || []
+  const savedTasks = JSON.parse(window.localStorage.getItem('tasks')) || []
   app.tasks = savedTasks.map((task) => {
     return createTask(task.title, task.isCompleted)
   })
-  app.tasks.forEach((task) => {
-    return addTaskToList(task, app.tasksList)
+  app.tasks.forEach((task, index) => {
+    return addTaskToList(task, app.tasksList, index)
   })
 }
 
 function saveTasksToLocalStorage (tasks) {
-  localStorage.setItem('tasks', JSON.stringify(tasks))
+  window.localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 
 function createTask (title, isCompleted = false) {
@@ -32,8 +35,8 @@ function createTask (title, isCompleted = false) {
   }
 }
 
-function addTaskToList (task, taskList) {
-  const taskElement = createTaskElement(task)
+function addTaskToList (task, taskList, id) {
+  const taskElement = createTaskElement(task, id)
   taskList.appendChild(taskElement)
 }
 
@@ -42,16 +45,21 @@ function addTask (app) {
   const newTask = createTask(newTaskTitle)
   app.tasks.push(newTask)
 
-  addTaskToList(newTask, app.tasksList)
+  addTaskToList(newTask, app.tasksList, 0)
   saveTasksToLocalStorage(app.tasks)
   app.newTaskInput.value = ''
 }
 
-function createTaskElement (task) {
+function createTaskElement (task, id) {
   const taskElement = document.createElement('li')
+  const span1 = document.createElement('span')
+  const span2 = document.createElement('span')
 
   const taskCheckbox = document.createElement('input')
   taskCheckbox.type = 'checkbox'
+  const idTask = id > 0 ? id : app.tasks.length
+  taskCheckbox.id = 'checkbox' + idTask
+  taskCheckbox.className = 'checkboxTask'
   taskCheckbox.checked = task.isCompleted
   taskCheckbox.addEventListener('change', () => {
     task.isCompleted = taskCheckbox.checked
@@ -59,36 +67,70 @@ function createTaskElement (task) {
     saveTasksToLocalStorage(app.tasks)
   })
 
-  const taskText = document.createElement('span')
+  const taskText = document.createElement('label')
   taskText.textContent = task.title
+  taskText.setAttribute('for', 'checkbox' + idTask)
   taskText.classList.toggle('completed', task.isCompleted)
 
-  const taskDeleteButton = document.createElement('button')
-  taskDeleteButton.textContent = 'Eliminar'
-  taskDeleteButton.className = 'delete-button'
+  const taskDeleteButton = document.createElement('input')
+  taskDeleteButton.type = 'image'
+  taskDeleteButton.src = 'assets/button-delete.svg'
+  taskDeleteButton.className = 'deleteButton'
   taskDeleteButton.addEventListener('click', () => {
-    taskElement.remove()
+    taskElement.classList.add('deleted')
+    setTimeout(() => {
+      taskElement.remove()
 
-    const taskIndex = app.tasks.indexOf(task)
-    if (taskIndex > -1) {
-      app.tasks.splice(taskIndex, 1)
-    }
-    saveTasksToLocalStorage(app.tasks)
+      const taskIndex = app.tasks.indexOf(task)
+      if (taskIndex > -1) {
+        app.tasks.splice(taskIndex, 1)
+      }
+      saveTasksToLocalStorage(app.tasks)
+    }, 1000)
   })
 
-  taskElement.appendChild(taskCheckbox)
-  taskElement.appendChild(taskText)
-  taskElement.appendChild(taskDeleteButton)
+  span1.appendChild(taskCheckbox)
+  span1.appendChild(taskText)
+  span2.appendChild(taskDeleteButton)
+
+  taskElement.appendChild(span1)
+  taskElement.appendChild(span2)
 
   return taskElement
 }
 
 addTaskButton.addEventListener('click', () => {
-  addTask(app)
+  if (newTaskInput.value) {
+    addTask(app)
+  }
 })
 
 newTaskInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
+  if (event.key === 'Enter' && newTaskInput.value) {
     addTask(app)
   }
+})
+
+allTask.addEventListener('click', () => {
+  allTask.classList.add('active')
+  pendingTask.classList.remove('active')
+  completedTask.classList.remove('active')
+})
+
+pendingTask.addEventListener('click', () => {
+  pendingTask.classList.add('active')
+  allTask.classList.remove('active')
+  completedTask.classList.remove('active')
+
+  app.tasks.forEach((task, index) => {
+    if (!task.isCompleted) {
+      task.classList.add('hide')
+    }
+  })
+})
+
+completedTask.addEventListener('click', () => {
+  completedTask.classList.add('active')
+  pendingTask.classList.remove('active')
+  allTask.classList.remove('active')
 })

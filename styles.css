@@ -1,46 +1,132 @@
 body {
   background-color: #f2f2f2;
-  font-family: 'Roboto', sans-serif;
+  font-family: system-ui, -apple-system,"Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 16px;
-  font-weight: 400;
-  line-height: 1.5;
   color: #333;
-  margin: 1rem;
-  padding: 0;
+  padding: 50px;
+  max-width: max-content;
+  margin: auto;
 }
 
-h1 {
-  text-align: center;
-}
-
-input,
-button {
-  font-size: 16px;
-  padding: 8px;
+#new-task-input {
+  font-size: 17px;
+  padding: 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  width: 300px;
 }
 
-button {
+#add-task-button {
+  padding: 12px;
+}
+
+.boton {
+  font-size: 17px;
   background-color: darkorange;
+  color: #f2f2f2;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid darkorange;
+}
+
+.boton:hover {
+  background-color: #f2f2f2;
+  color: darkorange;
+}
+
+.controls {
+  display: flex;
+  gap: 40px;
+  padding: 18px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.controls span {
+  font-size: 17px;
+  color: #333;
+  cursor: pointer;
+}
+
+.controls span.active {
+  color: darkorange;
+}
+
+.controls .clear-btn{
+  border: none;
+  opacity: 0.6;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 7px 13px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  transition: transform 0.25s ease;
+  background: linear-gradient(135deg, #1798fb 0%, #2D5CFE 100%);
+}
+.clear-btn.active{
+  opacity: 0.9;
+  pointer-events: auto;
+}
+.clear-btn:active{
+  transform: scale(0.93);
+}
+
+.deleteButton {
+  width: 20px;
+}
+
+.checkboxTask {
+  accent-color: darkorange;
   cursor: pointer;
 }
 
 ul {
-  list-style-type: none;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@keyframes create {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 100;
+  }
 }
 
 li {
-  background-color: white;
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
+  justify-content: space-between;
+  gap: 15px;
+  width: 400px;
+  animation: create 2s;
 }
 
 .completed {
-  text-decoration: line-through;
+  text-decoration-line: line-through;
+}
+
+.hide {
+  display: none;
+}
+
+@keyframes delete {
+  from {
+    transform: translateX(0%);
+    opacity: 100;
+  }
+
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.deleted {
+  animation: delete 1s;
 }

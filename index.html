@@ -19,8 +19,14 @@
 </head>
 <body>
     <h1>Lista de Tareas</h1>
-    <input id="new-task-input" type="text" placeholder="Escribe una nueva tarea...">
-    <button id="add-task-button">Añadir Tarea</button>
+    <input id="new-task-input" type="text" placeholder="Nombre de la tarea">
+    <button id="add-task-button" class="boton">Añadir</button>
+    <div class="controls">
+        <span id="all-task-span" class="active">Todas</span>
+        <span id="pending-task-span">Pendientes</span>
+        <span id="completed-task-span">Completadas</span>
+        <!--button class="boton">Eliminar todas</button-->
+    </div>
     <ul id="tasks-list"></ul>
     
     <script src="main.js"></script>
